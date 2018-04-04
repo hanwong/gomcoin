@@ -25,7 +25,9 @@ const getLastBlock = () => blockchain[blockchain.length-1]
 const getTimestamp = () => new Date().getDate() / 1000
 
 const createHash = (index, previousHash, timestamp, data) => 
-  CryptoJs.SHA256(index + previousHash + timestamp + data).toString()
+  CryptoJs.SHA256(
+    index + previousHash + timestamp + JSON.stringify(data)
+  ).toString()
 
 const createNewBlock = data => {
   const previousBlock = getLastBlock()
@@ -39,16 +41,48 @@ const createNewBlock = data => {
 const getBlockHash = (block) => createHash(block.index, block.previousHash, block.timestamp, block.data)
 
 const isNewBlockValid = (candidateBlock, latestBlock) => {
-  if (latestBlock.index !== candidateBlock.index) {
-    return new Error('The index of candidate block is invalid.')
+  if (!isNewStructureValid(candidateBlock)) {
+    console.error('[isNewBlockValid] The structure of candidate block is invalid.')
+    return false
+  }
+  else if (latestBlock.index !== candidateBlock.index) {
+    console.error('[isNewBlockValid] The index of candidate block is invalid.')
+    return false
   }
   else if (latestBlock.hash !== candidateBlock.previousHash) {
-    return new Error('The previousHash of the candidate blcok is invalid.')
+    console.error('[isNewBlockValid] The previousHash of the candidate blcok is invalid.')
+    return false
   }
   else if (getBlockHash(candidateBlock) !== candidateBlock.hash) {
-    return new Error('The hash of the candidate blcok is invalid.')
+    console.error('[isNewBlockValid] The hash of the candidate blcok is invalid.')
+    return false
   }
-  else {
-    return true
+  return true
+}
+
+const isNewStructureValid = (block) => {
+  return (
+    typeof block.index === 'number' &&
+    typeof block.hash === 'string' &&
+    typeof block.previousHash === 'string' &&
+    typeof block.timestamp === 'number' &&
+    typeof block.data === 'string'
+  )
+}
+
+const isChainValid = (candidateChain) => {
+  const isGenesisValid = block => {
+    return JSON.stringify(block) === JSON.stringify(genesisBlock)
   }
+  if (!isGenesisValid(candidateChain[0])) {
+    console.error('[isChainValid] The genesisBlock of the candidate chain is invalid.')
+    return false
+  }
+  for (let i=1 ; i < candidateChain.length ; i++) {
+    if (!isNewBlockValid(candidateChain[i], candidateChain[i-1])) {
+      console.error('[isChainValid] The candidate chain has invalid block.')
+      return false
+    }
+  }
+  return true
 }
