@@ -1,0 +1,10 @@
+{
+  "name": "gomcoin",
+  "version": "1.0.0",
+  "description": "Gomcoin, blockchain cyrptocurrency made in NodeJS",
+  "main": "src/server.js",
+  "repository": "git@github.com:hanwong/gomcoin.git",
+  "author": "hanwong",
+  "license": "MIT",
+  "private": false
+}
