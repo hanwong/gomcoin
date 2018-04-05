@@ -35,9 +35,22 @@ const createNewBlock = data => {
   const previousBlock = getLastBlock()
   const newBlockIndex = previousBlock.index + 1
   const newTimestamp = getTimestamp()
-  const newHash = createHash(newBlockIndex, previousBlock.hash, newTimestamp, data)
-  
-  return new Block(newBlockIndex, newHash, previousBlock.hash, newTimestamp, data)
+  const newHash = createHash(
+    newBlockIndex,
+    previousBlock.hash,
+    newTimestamp,
+    data
+  )
+  const newBlock = new Block(
+    newBlockIndex,
+    newHash,
+    previousBlock.hash,
+    newTimestamp,
+    data
+  )
+  addBlockToChain(newBlock)
+
+  return newBlock
 }
 
 const getBlockHash = (block) => createHash(block.index, block.previousHash, block.timestamp, block.data)
@@ -107,3 +120,7 @@ const addBlockToChain = candidateBlock => {
   }
 }
 
+module.exports = {
+  getBlockchain,
+  createNewBlock
+}
