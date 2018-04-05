@@ -20,11 +20,9 @@ const genesisBlock = new Block(
 
 let blockchain = [genesisBlock]
 
-const getLastBlock = () => blockchain[blockchain.length-1]
-
-const getTimestamp = () => new Date().getDate() / 1000
-
 const getBlockchain = () => blockchain
+const getLastBlock = () => blockchain[blockchain.length-1]
+const getTimestamp = () => new Date().getTime() / 1000
 
 const createHash = (index, previousHash, timestamp, data) => 
   CryptoJs.SHA256(
@@ -60,7 +58,7 @@ const isNewBlockValid = (candidateBlock, latestBlock) => {
     console.error('[isNewBlockValid] The structure of candidate block is invalid.')
     return false
   }
-  else if (latestBlock.index !== candidateBlock.index) {
+  else if (latestBlock.index + 1 !== candidateBlock.index) {
     console.error('[isNewBlockValid] The index of candidate block is invalid.')
     return false
   }
