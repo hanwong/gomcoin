@@ -21,7 +21,7 @@ const genesisBlock = new Block(
 let blockchain = [genesisBlock]
 
 const getBlockchain = () => blockchain
-const getLastBlock = () => blockchain[blockchain.length-1]
+const getNewestBlock = () => blockchain[blockchain.length-1]
 const getTimestamp = () => new Date().getTime() / 1000
 
 const createHash = (index, previousHash, timestamp, data) => 
@@ -30,7 +30,7 @@ const createHash = (index, previousHash, timestamp, data) =>
   ).toString()
 
 const createNewBlock = data => {
-  const previousBlock = getLastBlock()
+  const previousBlock = getNewestBlock()
   const newBlockIndex = previousBlock.index + 1
   const newTimestamp = getTimestamp()
   const newHash = createHash(
@@ -53,27 +53,27 @@ const createNewBlock = data => {
 
 const getBlockHash = (block) => createHash(block.index, block.previousHash, block.timestamp, block.data)
 
-const isNewBlockValid = (candidateBlock, latestBlock) => {
-  if (!isNewStructureValid(candidateBlock)) {
-    console.error('[isNewBlockValid] The structure of candidate block is invalid.')
+const isBlockValid = (candidateBlock, latestBlock) => {
+  if (!isBlockStructureValid(candidateBlock)) {
+    console.error('[isBlockValid] The structure of candidate block is invalid.')
     return false
   }
   else if (latestBlock.index + 1 !== candidateBlock.index) {
-    console.error('[isNewBlockValid] The index of candidate block is invalid.')
+    console.error('[isBlockValid] The index of candidate block is invalid.')
     return false
   }
   else if (latestBlock.hash !== candidateBlock.previousHash) {
-    console.error('[isNewBlockValid] The previousHash of the candidate blcok is invalid.')
+    console.error('[isBlockValid] The previousHash of the candidate blcok is invalid.')
     return false
   }
   else if (getBlockHash(candidateBlock) !== candidateBlock.hash) {
-    console.error('[isNewBlockValid] The hash of the candidate blcok is invalid.')
+    console.error('[isBlockValid] The hash of the candidate blcok is invalid.')
     return false
   }
   return true
 }
 
-const isNewStructureValid = (block) => {
+const isBlockStructureValid = (block) => {
   return (
     typeof block.index === 'number' &&
     typeof block.hash === 'string' &&
@@ -92,7 +92,7 @@ const isChainValid = (candidateChain) => {
     return false
   }
   for (let i=1 ; i < candidateChain.length ; i++) {
-    if (!isNewBlockValid(candidateChain[i], candidateChain[i-1])) {
+    if (!isBlockValid(candidateChain[i], candidateChain[i-1])) {
       console.error('[isChainValid] The candidate chain has invalid block.')
       return false
     }
@@ -110,7 +110,7 @@ const replaceChain = candidateChain => {
 }
 
 const addBlockToChain = candidateBlock => {
-  if (isNewBlockValid(candidateBlock, getLastBlock())) {
+  if (isBlockValid(candidateBlock, getNewestBlock())) {
     getBlockchain().push(candidateBlock)
     return true
   } else {
@@ -119,6 +119,10 @@ const addBlockToChain = candidateBlock => {
 }
 
 module.exports = {
+  getNewestBlock,
   getBlockchain,
-  createNewBlock
+  createNewBlock,
+  addBlockToChain,
+  replaceChain,
+  isBlockStructureValid
 }
