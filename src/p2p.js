@@ -121,6 +121,7 @@ const sendMessage = (ws, message) => ws.send(JSON.stringify(message))
 const sendMessageToAll = message => sockets.forEach(ws => sendMessage(ws, message))
 
 const responseLatest = () => blockchainResponse([getNewestBlock()])
+
 const responseAll = () => blockchainResponse(getBlockchain())
 
 const handleSocketError = ws => {
