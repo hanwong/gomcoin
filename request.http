@@ -2,7 +2,7 @@ GET http://localhost:3000/blocks
 
 ###
 
-POST http://localhost:3000/blocks
+POST http://localhost:5000/blocks
 Content-Type: application/json
 
 {
@@ -11,7 +11,7 @@ Content-Type: application/json
 
 ###
 
-POST http://localhost:3000/peers
+POST http://localhost:5000/peers
 Content-Type: application/json
 
 {
