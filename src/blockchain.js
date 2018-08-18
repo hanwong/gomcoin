@@ -65,11 +65,18 @@ const findBlock = (index, previousHash, timestamp, data, difficulty) => {
 const hashMatchesDifficulty = (hash, difficulty) => {
   const hashInBinary = hexToBinary(hash)
   const requiredZeros = '0'.repeat(difficulty)
-  console.log('Trying Difficulty: ', difficulty, ' with Hash ', hashInBinary)
+  // console.log('Trying Difficulty: ', difficulty, ' with Hash ', hashInBinary)
   return hashInBinary.startsWith(requiredZeros)
 }
 
-const getBlockHash = (block) => createHash(block.index, block.previousHash, block.timestamp, block.data)
+const getBlockHash = (block) => createHash (
+  block.index,
+  block.previousHash,
+  block.timestamp,
+  block.data,
+  block.difficulty,
+  block.nonce
+)
 
 const isBlockValid = (candidateBlock, latestBlock) => {
   if (!isBlockStructureValid(candidateBlock)) {
